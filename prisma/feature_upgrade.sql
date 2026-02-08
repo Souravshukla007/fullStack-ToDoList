@@ -1,0 +1,43 @@
+DO $$
+BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'Priority') THEN
+    CREATE TYPE "Priority" AS ENUM ('LOW', 'MEDIUM', 'HIGH');
+  END IF;
+
+  IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'Recurrence') THEN
+    CREATE TYPE "Recurrence" AS ENUM ('NONE', 'DAILY', 'WEEKLY');
+  END IF;
+END
+$$;
+
+ALTER TABLE public.items
+ADD COLUMN IF NOT EXISTS description VARCHAR(500),
+ADD COLUMN IF NOT EXISTS "completedAt" TIMESTAMP(3),
+ADD COLUMN IF NOT EXISTS "dueAt" TIMESTAMP(3),
+ADD COLUMN IF NOT EXISTS priority "Priority" NOT NULL DEFAULT 'MEDIUM',
+ADD COLUMN IF NOT EXISTS recurrence "Recurrence" NOT NULL DEFAULT 'NONE',
+ADD COLUMN IF NOT EXISTS category VARCHAR(60),
+ADD COLUMN IF NOT EXISTS pinned BOOLEAN NOT NULL DEFAULT false,
+ADD COLUMN IF NOT EXISTS position INTEGER NOT NULL DEFAULT 0,
+ADD COLUMN IF NOT EXISTS "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+ADD COLUMN IF NOT EXISTS "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP;
+
+UPDATE public.items
+SET position = id
+WHERE position = 0;
+
+CREATE TABLE IF NOT EXISTS public.subtasks (
+  id SERIAL PRIMARY KEY,
+  "itemId" INTEGER NOT NULL REFERENCES public.items(id) ON DELETE CASCADE,
+  title VARCHAR(120) NOT NULL,
+  completed BOOLEAN NOT NULL DEFAULT false,
+  "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX IF NOT EXISTS items_completed_idx ON public.items(completed);
+CREATE INDEX IF NOT EXISTS items_priority_idx ON public.items(priority);
+CREATE INDEX IF NOT EXISTS items_dueAt_idx ON public.items("dueAt");
+CREATE INDEX IF NOT EXISTS items_pinned_idx ON public.items(pinned);
+CREATE INDEX IF NOT EXISTS items_createdAt_idx ON public.items("createdAt");
+CREATE INDEX IF NOT EXISTS subtasks_itemId_idx ON public.subtasks("itemId");

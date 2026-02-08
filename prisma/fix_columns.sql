@@ -1,4 +1,4 @@
-ALTER TABLE public.items
+:ALTER TABLE public.items
 ADD COLUMN IF NOT EXISTS completed BOOLEAN NOT NULL DEFAULT false;
 
 ALTER TABLE public.items

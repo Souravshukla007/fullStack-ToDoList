@@ -6,12 +6,51 @@ datasource db {
   provider = "postgresql"
 }
 
+enum Priority {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+enum Recurrence {
+  NONE
+  DAILY
+  WEEKLY
+}
+
 model Item {
-  id        Int     @id @default(autoincrement())
-  title     String  @db.VarChar(100)
-  completed Boolean @default(false)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id           Int         @id @default(autoincrement())
+  title        String      @db.VarChar(100)
+  description  String?     @db.VarChar(500)
+  completed    Boolean     @default(false)
+  completedAt  DateTime?
+  dueAt        DateTime?
+  priority     Priority    @default(MEDIUM)
+  recurrence   Recurrence  @default(NONE)
+  category     String?     @db.VarChar(60)
+  pinned       Boolean     @default(false)
+  position     Int         @default(0)
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  subtasks     Subtask[]
 
   @@map("items")
+  @@index([completed])
+  @@index([priority])
+  @@index([dueAt])
+  @@index([pinned])
+  @@index([createdAt])
+}
+
+model Subtask {
+  id        Int      @id @default(autoincrement())
+  itemId    Int
+  title     String   @db.VarChar(120)
+  completed Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  item      Item     @relation(fields: [itemId], references: [id], onDelete: Cascade)
+
+  @@map("subtasks")
+  @@index([itemId])
 }
