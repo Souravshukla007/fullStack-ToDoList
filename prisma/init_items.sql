@@ -1,0 +1,4 @@
+CREATE TABLE IF NOT EXISTS public.items (
+  id SERIAL PRIMARY KEY,
+  title VARCHAR(100) NOT NULL
+);
