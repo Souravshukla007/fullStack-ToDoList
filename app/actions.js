@@ -27,3 +27,14 @@ export async function deleteTodo(formData) {
   });
   revalidatePath("/");
 }
+
+export async function toggleTodo(formData) {
+  const id = Number(formData.get("id"));
+  const completed = String(formData.get("completed")) === "true";
+  if (!id) return;
+  await prisma.item.update({
+    where: { id },
+    data: { completed: !completed },
+  });
+  revalidatePath("/");
+}
