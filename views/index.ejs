@@ -8,8 +8,11 @@
   <div class="box">
     <% for(let item of listItems){%>
       <div class="item">
-        <form action="/delete" method="post">
-          <input type="checkbox" onchange="this.form.submit()" name="deleteItemId" value="<%= item.id %>">
+        <form action="/delete" method="post" class="checkbox-form">
+          <label class="animated-checkbox ejs-checkbox">
+            <input type="checkbox" onchange="this.form.submit()" name="deleteItemId" value="<%= item.id %>">
+            <div class="animated-checkbox__mark"></div>
+          </label>
         </form>
 
         <p id="title<%=item.id%>">

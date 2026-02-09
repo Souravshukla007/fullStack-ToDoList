@@ -2,7 +2,7 @@ html {
   background-color: #e4e9fd;
   background-image: -webkit-linear-gradient(65deg, #FFCAD4 50%, #E8EEEA 50%);
   min-height: 1000px;
-  font-family: "helvetica neue";
+  font-family: "Poppins", sans-serif;
 }
 body {
   display: flex;
@@ -46,9 +46,80 @@ form.edit {
   border-bottom: 0;
 }
 
-input[type="checkbox"] {
-  margin: 20px;
-  margin-left: 0;
+.checkbox-form {
+  margin-left: 20px;
+}
+
+/* Animated checkbox (Uiverse-inspired) */
+.animated-checkbox {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+}
+
+.animated-checkbox input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+.animated-checkbox__mark {
+  --clr: #2d8cf0;
+  position: relative;
+  top: 0;
+  left: 0;
+  height: 1.3em;
+  width: 1.3em;
+  background-color: #ccc;
+  border-radius: 50%;
+  transition: 300ms;
+}
+
+.animated-checkbox input:checked ~ .animated-checkbox__mark {
+  background-color: var(--clr);
+  border-radius: 0.5rem;
+  animation: checkboxPulse 500ms ease-in-out;
+}
+
+.animated-checkbox__mark:after {
+  content: "";
+  position: absolute;
+  display: none;
+  left: 0.45em;
+  top: 0.25em;
+  width: 0.25em;
+  height: 0.5em;
+  border: solid #e0e0e2;
+  border-width: 0 0.15em 0.15em 0;
+  transform: rotate(45deg);
+}
+
+.animated-checkbox input:checked ~ .animated-checkbox__mark:after {
+  display: block;
+}
+
+@keyframes checkboxPulse {
+  0% {
+    box-shadow: 0 0 0 #0b6e4f90;
+    rotate: 20deg;
+  }
+
+  50% {
+    rotate: -20deg;
+  }
+
+  75% {
+    box-shadow: 0 0 0 10px #0b6e4f60;
+  }
+
+  100% {
+    box-shadow: 0 0 0 13px #0b6e4f30;
+    rotate: 0;
+  }
 }
 
 p {

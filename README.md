@@ -1,51 +1,121 @@
-# Next.js + Tailwind + Prisma + Neon Todo App
+# ✨ Full-Stack Smart Todo App
 
-This project is now migrated to **Next.js (App Router)** with **Tailwind CSS**, using **Prisma ORM** and **Neon PostgreSQL**.
+A modern and beautiful **Todo List Web App** built with **Next.js App Router**, **Prisma**, and **PostgreSQL (Neon)**.
 
-## Tech Stack
+It includes authentication, analytics, recurring tasks, subtasks, priority filters, pinned tasks, and even a motivational quote system to keep you productive 🚀
 
-- Frontend: Next.js + React + Tailwind CSS
-- Backend: Next.js Server Actions
-- Database: Neon Postgres + Prisma
-- Deployment: Vercel
+---
 
-## Setup
+## 🚀 Features
 
-1. Install dependencies:
+- 🔐 **Authentication** (Sign up / Login / Logout) using secure JWT cookies
+- ✅ **Task Management**: Create, update, delete, complete tasks
+- 📌 **Pin Important Tasks** and reorder with move up/down controls
+- 🧩 **Subtasks** support per todo item
+- 🗂️ **Category + Priority + Due Date** organization
+- 🔁 **Recurring Tasks** (daily / weekly)
+- 📊 **Analytics Dashboard** (weekly completion + streaks)
+- 💬 **Daily Motivational Quotes** (with fallback and favorites)
+- 🎨 Responsive UI with Tailwind CSS + clean modern design
+
+---
+
+## 🛠️ Tech Stack
+
+- **Frontend:** Next.js (App Router), React, Tailwind CSS
+- **Backend:** Next.js Server Actions + Route Handlers
+- **Database:** PostgreSQL (Neon) + Prisma ORM
+- **Auth:** JWT + `jose`, password hashing with `bcryptjs`
+- **Deployment:** Vercel (recommended)
+
+---
+
+## 📦 Getting Started
+
+### 1) Install dependencies
 
 ```bash
 npm install
 ```
 
-2. Create `.env` in the project root:
+### 2) Create environment file
+
+Create a `.env` file in the project root:
 
 ```env
 DATABASE_URL="your_neon_connection_string"
+AUTH_SECRET="replace_with_a_secure_random_secret"
 ```
 
-3. Push Prisma schema and generate client:
+> `AUTH_SECRET` is strongly recommended so your session JWTs are secure.
+
+### 3) Initialize database and Prisma client
 
 ```bash
 npm run prisma:push
 npm run prisma:generate
 ```
 
-4. Run locally:
+### 4) Start development server
 
 ```bash
 npm run dev
 ```
 
-Open http://localhost:3000
+Now open: **http://localhost:3000**
 
-## Vercel Deployment
+---
 
-1. Push repo to GitHub.
-2. Import project in Vercel.
-3. Add environment variable in Vercel:
+## 📁 Project Structure (high level)
+
+```txt
+app/
+  page.js                 # Main todo dashboard
+  analytics/page.js       # Analytics and streak insights
+  login/page.js           # Login UI
+  signup/page.js          # Signup UI
+  actions.js              # Todo + subtask server actions
+  auth-actions.js         # Auth server actions
+  api/quotes/random       # Motivational quote API route
+lib/
+  auth.js                 # Session and JWT helpers
+  prisma.js               # Prisma client singleton
+prisma/
+  schema.prisma           # Database schema
+```
+
+---
+
+## 📜 Available Scripts
+
+```bash
+npm run dev              # Run app in development
+npm run build            # Prisma generate + Next.js production build
+npm run start            # Start production server
+npm run prisma:push      # Push schema changes to DB
+npm run prisma:generate  # Generate Prisma client
+npm run prisma:migrate   # Deploy Prisma migrations
+```
+
+---
+
+## 🌐 Deployment (Vercel)
+
+1. Push this repository to GitHub.
+2. Import the project into Vercel.
+3. Add environment variables in Vercel:
 
 ```env
 DATABASE_URL="your_neon_connection_string"
+AUTH_SECRET="replace_with_a_secure_random_secret"
 ```
 
-4. Deploy.
+4. Deploy 🎉
+
+---
+
+## 🙌 Author
+
+Built by **Sourav Shukla**.
+
+If you like this project, consider starring the repo ⭐

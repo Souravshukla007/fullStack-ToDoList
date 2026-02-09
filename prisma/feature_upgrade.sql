@@ -41,3 +41,32 @@ CREATE INDEX IF NOT EXISTS items_dueAt_idx ON public.items("dueAt");
 CREATE INDEX IF NOT EXISTS items_pinned_idx ON public.items(pinned);
 CREATE INDEX IF NOT EXISTS items_createdAt_idx ON public.items("createdAt");
 CREATE INDEX IF NOT EXISTS subtasks_itemId_idx ON public.subtasks("itemId");
+
+-- Auth upgrade
+CREATE TABLE IF NOT EXISTS public.users (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
+  email VARCHAR(160) NOT NULL UNIQUE,
+  "passwordHash" VARCHAR(255) NOT NULL,
+  "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+ALTER TABLE public.items
+ADD COLUMN IF NOT EXISTS "userId" INTEGER;
+
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1
+    FROM pg_constraint
+    WHERE conname = 'items_userId_fkey'
+  ) THEN
+    ALTER TABLE public.items
+    ADD CONSTRAINT "items_userId_fkey"
+    FOREIGN KEY ("userId") REFERENCES public.users(id) ON DELETE CASCADE;
+  END IF;
+END
+$$;
+
+CREATE INDEX IF NOT EXISTS items_userId_idx ON public.items("userId");

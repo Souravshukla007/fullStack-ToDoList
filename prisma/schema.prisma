@@ -20,6 +20,7 @@ enum Recurrence {
 
 model Item {
   id           Int         @id @default(autoincrement())
+  userId       Int?
   title        String      @db.VarChar(100)
   description  String?     @db.VarChar(500)
   completed    Boolean     @default(false)
@@ -32,6 +33,7 @@ model Item {
   position     Int         @default(0)
   createdAt    DateTime    @default(now())
   updatedAt    DateTime    @updatedAt
+  user         User?       @relation(fields: [userId], references: [id], onDelete: Cascade)
   subtasks     Subtask[]
 
   @@map("items")
@@ -39,6 +41,35 @@ model Item {
   @@index([priority])
   @@index([dueAt])
   @@index([pinned])
+  @@index([createdAt])
+  @@index([userId])
+}
+
+model User {
+  id           Int      @id @default(autoincrement())
+  name         String   @db.VarChar(100)
+  email        String   @unique @db.VarChar(160)
+  passwordHash String   @db.VarChar(255)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  items        Item[]
+  favoriteQuotes FavoriteQuote[]
+
+  @@map("users")
+}
+
+model FavoriteQuote {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  quote     String   @db.VarChar(500)
+  author    String?  @db.VarChar(120)
+  tone      String   @default("motivational") @db.VarChar(40)
+  source    String?  @db.VarChar(80)
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("favorite_quotes")
+  @@index([userId])
   @@index([createdAt])
 }
 

@@ -1,4 +1,5 @@
 import prisma from "../../lib/prisma";
+import { requireUserId } from "../../lib/auth";
 
 export const dynamic = "force-dynamic";
 
@@ -23,6 +24,7 @@ function label(date) {
 }
 
 export default async function AnalyticsPage() {
+  const userId = await requireUserId();
   const now = new Date();
   const startToday = startOfDay(now);
   const weekStart = addDays(startToday, -6);
@@ -30,23 +32,24 @@ export default async function AnalyticsPage() {
   const [totals, completedThisWeek, completedHistory] = await Promise.all([
     prisma.item.aggregate({
       _count: { _all: true },
-      where: {},
+      where: { userId },
     }),
     prisma.item.count({
       where: {
+        userId,
         completed: true,
         completedAt: { gte: weekStart },
       },
     }),
     prisma.item.findMany({
-      where: { completed: true, completedAt: { not: null } },
+      where: { userId, completed: true, completedAt: { not: null } },
       select: { completedAt: true },
       orderBy: { completedAt: "desc" },
     }),
   ]);
 
-  const activeCount = await prisma.item.count({ where: { completed: false } });
-  const completedCount = await prisma.item.count({ where: { completed: true } });
+  const activeCount = await prisma.item.count({ where: { userId, completed: false } });
+  const completedCount = await prisma.item.count({ where: { userId, completed: true } });
 
   const dailyMap = new Map();
   for (let i = 0; i < 7; i++) {
