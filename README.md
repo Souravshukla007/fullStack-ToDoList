@@ -1,4 +1,4 @@
-# ✨ Full-Stack Smart Todo App
+# ✨ Memoirly - A Full-Stack Smart Todo App
 
 A modern and beautiful **Todo List Web App** built with **Next.js App Router**, **Prisma**, and **PostgreSQL (Neon)**.
 
